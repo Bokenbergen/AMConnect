@@ -1,0 +1,13 @@
+mqtt:
+  sensor:
+    - name: "Autmower Status"
+      state_topic: "autmower/status"
+      icon: mdi:robot-mower-outline
+      
+    - name: "Autmower Signal"
+      state_topic: "autmower/rssi"
+      icon: mdi:wifi
+      
+    - name: "Autmower Uptime"
+      state_topic: "autmower/uptime"
+      icon: mdi:timer-outline
