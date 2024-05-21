@@ -13,6 +13,8 @@ const char* mqtt_location_topic = "automower/location";
 const char* mqtt_preferences_topic = "automower/preferences";
 const char* mqtt_prefstatus_topic = "automower/prefstatus";
 const char* mqtt_lwt_topic = "automower/lwt";
+const char* mqtt_uptime_topic = "automower/uptime";
+const char* mqtt_rssi_topic = "automower/rssi";
 
 // Define the port used for serial communication with the AutoMower.
 // Here we use Serial1, on pins 15 (RX) and 2 (TX)
