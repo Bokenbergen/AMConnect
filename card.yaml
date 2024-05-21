@@ -1,0 +1,8 @@
+type: vertical-stack
+cards:
+  - type: entities
+    title: Autmower Status
+    entities:
+      - entity: sensor.autmower_status
+      - entity: sensor.autmower_signal
+      - entity: sensor.autmower_uptime
