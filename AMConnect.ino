@@ -119,8 +119,13 @@ void setup()
 
 // Main loop
 void loop()
+
 {
-  // Chack if WiFi is connected
+  // Update MQTT topics
+  handle_uptime(); // Update Uptime topic
+  handle_wifirssi(); // Update WiFi RSSI topic
+  
+  // Check if WiFi is connected
   if (WiFi.status() != WL_CONNECTED) {
     wifi_reconnect();
   }
@@ -323,11 +328,44 @@ void handle_debug(bool sendmqtt, String debugmsg) {
   }
 }
 
+// Update RSSI topic
+unsigned long lastUpdateTimeRssi = 0; // Variable to store the last update time
 void handle_wifirssi() {
-  String wifirssi = "Wifi RSSI (dBm): " + (String)WiFi.RSSI();
+  unsigned long currentTime = millis(); // Get the current time in milliseconds
+  
+  // Check if 15 seconds have passed since the last update
+  if (currentTime - lastUpdateTimeRssi >= 15000) { 
+    String wifirssi = (String)WiFi.RSSI() + " dBm";
 
-  // Send to debug
-  handle_debug(true, wifirssi);
+    // Check if MQTT client is connected
+    if (client.connected()) {
+      char statusChar[50];
+      wifirssi.toCharArray(statusChar, 50);
+      client.publish(mqtt_rssi_topic, statusChar);
+    }
+    
+    lastUpdateTimeRssi = currentTime; // Update the last update time
+  }
+}
+
+// Update Uptime topic
+unsigned long lastUpdateTimeUptime = 0; // Variable to store the last update time
+void handle_uptime() {
+  unsigned long currentTime = millis(); // Get the current time in milliseconds
+  
+  // Check if 15 seconds have passed since the last update
+  if (currentTime - lastUpdateTimeUptime >= 15000) { 
+    String uptime = (String)uptime_formatter::getUptime();
+
+    // Check if MQTT client is connected
+    if (client.connected()) {
+      char statusChar[50];
+      uptime.toCharArray(statusChar, 50);
+      client.publish(mqtt_uptime_topic, statusChar);
+    }
+
+    lastUpdateTimeUptime = currentTime; // Update the last update time
+  }
 }
 
 void handle_status(int statusCode, String statusMsg) {
@@ -340,18 +378,6 @@ void handle_status(int statusCode, String statusMsg) {
     char statusChar[50];
     statusMsg.toCharArray(statusChar,50);
     client.publish(mqtt_status_topic, statusChar);
-  }
-}
-
-void handle_uptime() {
-  String uptime = "Up " + (String)uptime_formatter::getUptime();
-
-  // send to mqtt_debug_topic
-  if (client.connected())
-  {
-    char statusChar[50];
-    uptime.toCharArray(statusChar,50);
-    client.publish(mqtt_debug_topic, statusChar);
   }
 }
 
