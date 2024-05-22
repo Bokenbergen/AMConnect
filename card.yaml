@@ -3,6 +3,7 @@ cards:
   - type: entities
     title: Autmower Status
     entities:
+      - entity: lawn_mower.automower
       - entity: sensor.autmower_status
       - entity: sensor.autmower_signal
       - entity: sensor.autmower_uptime
