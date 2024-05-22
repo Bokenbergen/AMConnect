@@ -1,13 +1,23 @@
 mqtt:
+  lawn_mower:
+    unique_id: "Automower"
+    device:
+     name: "Autmower"
+     manufacturer: "Husqvarna"
+     model: "Automower 220AC"
+     connections: [["mac", "xx:xx:xx:xx:xx:xx"]]
+    activity_state_topic: "autmower/hastatus"
+    activity_value_template: "{{ value }}"
+
   sensor:
     - name: "Autmower Status"
       state_topic: "autmower/status"
       icon: mdi:robot-mower-outline
-      
+
     - name: "Autmower Signal"
       state_topic: "autmower/rssi"
       icon: mdi:wifi
-      
+
     - name: "Autmower Uptime"
       state_topic: "autmower/uptime"
       icon: mdi:timer-outline
