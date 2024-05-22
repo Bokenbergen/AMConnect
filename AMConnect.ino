@@ -381,6 +381,19 @@ void handle_status(int statusCode, String statusMsg) {
   }
 }
 
+void handle_hastatus(int statusCode, String statusMsg) {
+  // Send to debug
+  handle_debug(true, statusMsg);
+
+  // send to mqtt_status_topic
+  if (client.connected())
+  {
+    char statusChar[50];
+    statusMsg.toCharArray(statusChar,50);
+    client.publish(mqtt_ha_status_topic, statusChar);
+  }
+}
+
 void handle_am() {
   uint8_t statusAutomower[5] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
   uint8_t empty[5] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
@@ -579,60 +592,79 @@ void handle_am() {
         switch (statusInt) {
           case 6: //Status
             handle_status(statusInt, "Left wheel motor blocked"); // Linker Radmotor blockiert
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 12: //Status
             handle_status(statusInt, "No loop signal"); // Kein Schleifensignal
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 16: //Status
             handle_status(statusInt, "Outside working area");
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 18: //Status
             handle_status(statusInt, "Low battery voltage"); // Niedrige Batteriespannung
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 24: //Status
             handle_status(statusInt, "Wheel spinning");
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 28: //Status
             handle_status(statusInt, "Manual charging needed"); // Ladestation blockiert
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 26: //Status
             handle_status(statusInt, "Charging station blocked"); // Ladestation blockiert
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 34: //Status
             handle_status(statusInt, "Mower lifted"); // Mäher hochgehoben
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 52: //Status
             handle_status(statusInt, "Charging station no contact"); // Ladestation kein Kontakt
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 54: //Status
             handle_status(statusInt, "Pin expired"); // Pin abgelaufen
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 56: //Status
             handle_status(statusInt, "Left collision sensor defective");
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 58: //Status
             handle_status(statusInt, "Right collision sensor defective");
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 1000: //Status
-            handle_status(statusInt, "Leaves charging station"); // Verlässt Ladestation
+            handle_status(statusInt, "Leaving charging station"); // Verlässt Ladestation
+            handle_hastatus(statusInt, "mowing"); // Works with HA MQTT Lawn Mower
             break;
           case 1002: //Status
             handle_status(statusInt, "Mowing"); // Mähen
+            handle_hastatus(statusInt, "mowing"); // Works with HA MQTT Lawn Mower
             break;
           case 1006: //Status
-            handle_status(statusInt, "Mowing starting"); // Mähwerk starten
+            handle_status(statusInt, "Mower starting"); // Mähwerk starten
+            handle_hastatus(statusInt, "mowing"); // Works with HA MQTT Lawn Mower
             break;
           case 1008: //Status
             handle_status(statusInt, "Mower started"); // Mähwerk gestartet
+            handle_hastatus(statusInt, "mowing"); // Works with HA MQTT Lawn Mower
             break;
           case 1012: //Status
             handle_status(statusInt, "Start mowing"); // Starte Mähwerk
+            handle_hastatus(statusInt, "mowing"); // Works with HA MQTT Lawn Mower
             break;
           case 1014: //Status
             handle_status(statusInt, "Charging"); // Laden
+            handle_hastatus(statusInt, "docked"); // Works with HA MQTT Lawn Mower
             break;
           case 1016: //Status
             handle_status(statusInt, "Waiting in charging station");  // Wartet in Ladestation
+            handle_hastatus(statusInt, "docked"); // Works with HA MQTT Lawn Mower
             break;
           case 1024: //Status
             handle_status(statusInt, "Drives to charging station"); // Fährt in Ladestation
@@ -642,6 +674,7 @@ void handle_am() {
             break;
           case 1038: //Status
             handle_status(statusInt, "Stuck"); // Festgefahren
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 1040: //Status
             handle_status(statusInt, "Dodge/Evasion"); //Ausweichen
@@ -651,18 +684,23 @@ void handle_am() {
             break;
           case 1044: //Status
             handle_status(statusInt, "Stop"); // Stop
+            handle_hastatus(statusInt, "paused"); // Works with HA MQTT Lawn Mower
             break;
           case 1048: //Status
             handle_status(statusInt, "Docking"); // Andocken
+            handle_hastatus(statusInt, "docked"); // Works with HA MQTT Lawn Mower
             break;
           case 1050: //Status
             handle_status(statusInt, "Leaving charging station"); // Verlässt Ladestation
+            handle_hastatus(statusInt, "mowing"); // Works with HA MQTT Lawn Mower
             break;
           case 1052: //Status
             handle_status(statusInt, "Error"); // Fehler
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 1056: //Status
             handle_status(statusInt, "Waiting for use"); // Wartet auf Einsatz
+            handle_hastatus(statusInt, "docked"); // Works with HA MQTT Lawn Mower
             break;
           case 1058: //Status
             handle_status(statusInt, "Following limit cable"); // Begrenzung folgen
@@ -672,6 +710,7 @@ void handle_am() {
             break;
           case 1062: //Status
             handle_status(statusInt, "Stuck"); // Festgefahren
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
           case 1064: //Status
             handle_status(statusInt, "Searching"); // Suchen
@@ -684,6 +723,7 @@ void handle_am() {
             break;
           default: //no valid parameter: send status
             handle_status(statusInt, "Unknown statuscode"); // Unbekannt
+            handle_hastatus(statusInt, "error"); // Works with HA MQTT Lawn Mower
             break;
         }
       }
