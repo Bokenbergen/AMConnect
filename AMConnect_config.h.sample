@@ -9,6 +9,7 @@ const char* mqtt_password = "password";
 const char* mqtt_command_topic = "automower/command";
 const char* mqtt_debug_topic = "automower/debug";
 const char* mqtt_status_topic = "automower/status";
+const char* mqtt_ha_status_topic = "automower/hastatus";
 const char* mqtt_location_topic = "automower/location";
 const char* mqtt_preferences_topic = "automower/preferences";
 const char* mqtt_prefstatus_topic = "automower/prefstatus";
